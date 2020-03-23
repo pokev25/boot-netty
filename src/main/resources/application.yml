@@ -1,0 +1,6 @@
+netty:
+  port: 8080
+  threads:
+    worker: 1
+    acceptor: 1
+  backlog: 100
