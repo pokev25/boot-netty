@@ -28,7 +28,6 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
      */
     private final ServerManager serverManager;
 
-    @Autowired
     public ServiceHandler(ServerManager serverManager){
         this.serverManager = serverManager;
     }
