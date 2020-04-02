@@ -80,8 +80,8 @@ public class NettyServer{
                             addPipeline(ch);
                         }
                     });
-            ChannelFuture cf = sb.bind(tcpPort).sync();
-            cf.channel().closeFuture().sync();
+            channelFuture = sb.bind(tcpPort).sync();
+            channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(),e);
             doStop();
@@ -95,11 +95,10 @@ public class NettyServer{
     }
 
     private void doStop(){
-        try {
-            bossGroup.shutdownGracefully().sync();
-            workerGroup.shutdownGracefully().sync();
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(),e);
+        if(channelFuture != null){
+            channelFuture.channel().close();
+            workerGroup.shutdownGracefully().syncUninterruptibly();
+            bossGroup.shutdownGracefully().syncUninterruptibly();
         }
     }
 
