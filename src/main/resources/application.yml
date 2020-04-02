@@ -4,3 +4,13 @@ netty:
     worker: 1
     acceptor: 1
   backlog: 100
+
+# logging level
+logging:
+  level:
+    org:
+      springframework: info
+    io:
+      netty: info
+    com:
+      example: info
