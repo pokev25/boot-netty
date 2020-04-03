@@ -4,24 +4,16 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.GlobalEventExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
 
+@Slf4j
 @Component
 @ChannelHandler.Sharable
 public class ServiceHandler extends ChannelInboundHandlerAdapter {
-    /**
-     * The Logger.
-     */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * The Channels.
@@ -34,7 +26,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
 
     @PostConstruct
     public void init() {
-        logger.info("BaseHandler init");
+        log.info("BaseHandler init");
     }
 
     /**
@@ -44,14 +36,14 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx){
-        logger.info("channel activated {}", ctx.channel());
+        log.info("channel activated {}", ctx.channel());
         serverManager.getChannels().add(ctx.channel());
         ctx.fireChannelActive();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx){
-        logger.info("channel deactivated {}", ctx.channel());
+        log.info("channel deactivated {}", ctx.channel());
         serverManager.getChannels().remove(ctx.channel());
         ctx.fireChannelInactive();
     }
@@ -65,7 +57,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
         ByteBuf byteBuf = (ByteBuf) msg;
-        logger.debug("message : {} ",byteBuf.toString(Charset.defaultCharset()));
+        log.debug("message : {} ",byteBuf.toString(Charset.defaultCharset()));
         ctx.writeAndFlush(msg);
     }
 }

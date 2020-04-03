@@ -7,17 +7,18 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
 
+@Slf4j
 @Component
-public class NettyServer{
+public class NettyServer implements ApplicationRunner {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * The Tcp port.
      */
@@ -80,11 +81,13 @@ public class NettyServer{
                             addPipeline(ch);
                         }
                     });
+
             channelFuture = sb.bind(tcpPort).sync();
             channelFuture.channel().closeFuture().sync();
+
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(),e);
-            doStop();
+            log.error(e.getMessage(),e);
+            shutdown();
         }
     }
 
@@ -94,9 +97,9 @@ public class NettyServer{
         cp.addLast(serviceHandler);
     }
 
-    private void doStop(){
+    private void shutdown(){
         if(channelFuture != null){
-            channelFuture.channel().close();
+            channelFuture.channel().close().syncUninterruptibly();
             workerGroup.shutdownGracefully().syncUninterruptibly();
             bossGroup.shutdownGracefully().syncUninterruptibly();
         }
@@ -104,7 +107,11 @@ public class NettyServer{
 
     @PreDestroy
     public void stop(){
-        logger.info("stop");
-        doStop();
+        shutdown();
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        start();
     }
 }
