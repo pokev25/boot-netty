@@ -82,12 +82,10 @@ public class NettyServer implements ApplicationRunner {
                         }
                     });
 
-            channelFuture = sb.bind(tcpPort).sync();
-            channelFuture.channel().closeFuture().sync();
+            channelFuture = sb.bind(tcpPort);
 
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(),e);
-            shutdown();
         }
     }
 
@@ -100,8 +98,8 @@ public class NettyServer implements ApplicationRunner {
     private void shutdown(){
         if(channelFuture != null){
             channelFuture.channel().close().syncUninterruptibly();
-            workerGroup.shutdownGracefully().syncUninterruptibly();
             bossGroup.shutdownGracefully().syncUninterruptibly();
+            workerGroup.shutdownGracefully().syncUninterruptibly();
         }
     }
 
