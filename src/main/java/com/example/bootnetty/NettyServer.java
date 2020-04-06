@@ -5,6 +5,10 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +58,9 @@ public class NettyServer implements ApplicationRunner {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private ChannelFuture channelFuture;
+
+    private final StringDecoder DECODER = new StringDecoder();
+    private final StringEncoder ENCODE = new StringEncoder();
     /**
      * Start.
      */
@@ -90,9 +97,12 @@ public class NettyServer implements ApplicationRunner {
     }
 
     private void addPipeline(SocketChannel sc){
-        ChannelPipeline cp = sc.pipeline();
-        cp.addLast(new LoggingHandler(LogLevel.INFO));
-        cp.addLast(serviceHandler);
+        ChannelPipeline pipeline = sc.pipeline();
+        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
+        pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+        pipeline.addLast(DECODER);
+        pipeline.addLast(ENCODE);
+        pipeline.addLast(serviceHandler);
     }
 
     private void shutdown(){
