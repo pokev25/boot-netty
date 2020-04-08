@@ -11,6 +11,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -59,8 +60,6 @@ public class NettyServer implements ApplicationRunner {
     private EventLoopGroup workerGroup;
     private ChannelFuture channelFuture;
 
-    private final StringDecoder DECODER = new StringDecoder();
-    private final StringEncoder ENCODE = new StringEncoder();
     /**
      * Start.
      */
@@ -97,11 +96,13 @@ public class NettyServer implements ApplicationRunner {
     }
 
     private void addPipeline(SocketChannel sc){
+        String denyIps = "";
         ChannelPipeline pipeline = sc.pipeline();
         pipeline.addLast(new LoggingHandler(LogLevel.INFO));
+        pipeline.addLast("ip filter",new IpFilterHandler(denyIps));
         pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-        pipeline.addLast(DECODER);
-        pipeline.addLast(ENCODE);
+        pipeline.addLast("stringDecoder",new StringDecoder(CharsetUtil.UTF_8));
+        pipeline.addLast("stringEncoder",new StringEncoder(CharsetUtil.UTF_8));
         pipeline.addLast(serviceHandler);
     }
 

@@ -25,6 +25,7 @@ dependencies {
 	}
 	// https://mvnrepository.com/artifact/io.netty/netty-all
 	implementation group: 'io.netty', name: 'netty-all', version: '4.1.48.Final'
+	implementation 'com.google.guava:guava:28.2-jre'
 }
 
 test {
