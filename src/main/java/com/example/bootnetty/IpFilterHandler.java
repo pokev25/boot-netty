@@ -20,6 +20,10 @@ public class IpFilterHandler extends AbstractRemoteAddressFilter<InetSocketAddre
 
     private final Set<IpFilterRule> rules = Sets.newHashSet();
 
+    /**
+     * ip filter
+     * @param denyIPs 거부 IP 목록 , 로 구분
+     */
     public IpFilterHandler(String denyIPs) {
         List<String> ips = Splitter.on(',')
                 .trimResults()

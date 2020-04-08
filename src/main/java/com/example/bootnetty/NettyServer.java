@@ -50,8 +50,6 @@ public class NettyServer implements ApplicationRunner {
      */
     private final ServiceHandler serviceHandler;
 
-    private ServerBootstrap sb;
-
     public NettyServer(ServiceHandler serviceHandler){
         this.serviceHandler = serviceHandler;
     }
@@ -74,19 +72,19 @@ public class NettyServer implements ApplicationRunner {
         workerGroup = new NioEventLoopGroup(workerCount);
 
         try {
-            sb = new ServerBootstrap();
+            ServerBootstrap sb = new ServerBootstrap();
             sb.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)                              //서버 소켓 입출력 모드를 NIO로 설정
-                    //.option(ChannelOption.TCP_NODELAY,true)
-                    //.option(ChannelOption.SO_REUSEADDR,true)
-                    .option(ChannelOption.SO_BACKLOG, backlog)
-                    .handler(new LoggingHandler(LogLevel.INFO))                         //서버 소켓 채널 핸들러 등록
-                    .childHandler(new ChannelInitializer<SocketChannel>() {             //송수신 되는 데이터 가공 핸들러
-                        @Override
-                        protected void initChannel(SocketChannel ch) {
-                            addPipeline(ch);
-                        }
-                    });
+                .channel(NioServerSocketChannel.class)                              //서버 소켓 입출력 모드를 NIO로 설정
+                //.option(ChannelOption.TCP_NODELAY,true)
+                //.option(ChannelOption.SO_REUSEADDR,true)
+                .option(ChannelOption.SO_BACKLOG, backlog)
+                .handler(new LoggingHandler(LogLevel.INFO))                         //서버 소켓 채널 핸들러 등록
+                .childHandler(new ChannelInitializer<SocketChannel>() {             //송수신 되는 데이터 가공 핸들러
+                    @Override
+                    protected void initChannel(SocketChannel ch) {
+                        addPipeline(ch);
+                    }
+                });
 
             channelFuture = sb.bind(tcpPort);
 
