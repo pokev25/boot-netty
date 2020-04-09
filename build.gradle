@@ -23,9 +23,7 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-	implementation('org.springframework.boot:spring-boot-starter-web') {
-		exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
-	}
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-undertow'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -34,6 +32,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.netty/netty-all
 	implementation group: 'io.netty', name: 'netty-all', version: '4.1.48.Final'
 	implementation 'com.google.guava:guava:28.2-jre'
+}
+
+configurations {
+	compile.exclude module: 'spring-boot-starter-tomcat'
 }
 
 test {
