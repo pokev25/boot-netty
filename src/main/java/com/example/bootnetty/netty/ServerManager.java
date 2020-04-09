@@ -1,4 +1,4 @@
-package com.example.bootnetty;
+package com.example.bootnetty.netty;
 
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;

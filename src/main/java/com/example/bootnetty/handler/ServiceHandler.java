@@ -1,6 +1,6 @@
-package com.example.bootnetty;
+package com.example.bootnetty.handler;
 
-import io.netty.buffer.ByteBuf;
+import com.example.bootnetty.netty.ServerManager;
 import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 import java.util.Date;
 
 @Slf4j

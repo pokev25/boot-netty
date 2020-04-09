@@ -1,5 +1,7 @@
-package com.example.bootnetty;
+package com.example.bootnetty.netty;
 
+import com.example.bootnetty.handler.IpFilterHandler;
+import com.example.bootnetty.handler.ServiceHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

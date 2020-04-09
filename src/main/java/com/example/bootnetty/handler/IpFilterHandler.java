@@ -1,4 +1,4 @@
-package com.example.bootnetty;
+package com.example.bootnetty.handler;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
