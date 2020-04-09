@@ -1,19 +1,13 @@
 package com.example.bootnetty.netty;
 
-import com.example.bootnetty.handler.IpFilterHandler;
-import com.example.bootnetty.handler.ServiceHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -47,18 +41,15 @@ public class NettyServer implements ApplicationRunner {
     @Value("${netty.backlog}")
     private int backlog;
 
-    /**
-     * The constant SERVICE_HANDLER.
-     */
-    private final ServiceHandler serviceHandler;
-
-    public NettyServer(ServiceHandler serviceHandler){
-        this.serviceHandler = serviceHandler;
-    }
-
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private ChannelFuture channelFuture;
+
+    private final ServerInitializer serverInitializer;
+
+    public NettyServer(ServerInitializer serverInitializer) {
+        this.serverInitializer = serverInitializer;
+    }
 
     /**
      * Start.
@@ -81,29 +72,13 @@ public class NettyServer implements ApplicationRunner {
                 //.option(ChannelOption.SO_REUSEADDR,true)
                 .option(ChannelOption.SO_BACKLOG, backlog)
                 .handler(new LoggingHandler(LogLevel.INFO))                         //서버 소켓 채널 핸들러 등록
-                .childHandler(new ChannelInitializer<SocketChannel>() {             //송수신 되는 데이터 가공 핸들러
-                    @Override
-                    protected void initChannel(SocketChannel ch) {
-                        addPipeline(ch);
-                    }
-                });
+                .childHandler(serverInitializer);
 
             channelFuture = sb.bind(tcpPort);
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
-    }
-
-    private void addPipeline(SocketChannel sc){
-        String denyIps = "";
-        ChannelPipeline pipeline = sc.pipeline();
-        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
-        pipeline.addLast("ip filter",new IpFilterHandler(denyIps));
-        pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-        pipeline.addLast("stringDecoder",new StringDecoder(CharsetUtil.UTF_8));
-        pipeline.addLast("stringEncoder",new StringEncoder(CharsetUtil.UTF_8));
-        pipeline.addLast(serviceHandler);
     }
 
     private void shutdown(){
