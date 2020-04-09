@@ -44,18 +44,13 @@ test {
 
 mainClassName = 'com.example.bootnetty.BootNettyApplication'
 
-tasks.distTar{
-	enabled = false
-}
-tasks.bootDistTar{
-	enabled = false
-}
-tasks.bootDistZip{
-	enabled = false
-}
-tasks.bootJar {
-	enabled = false
-}
-tasks.jar {
-	enabled = true
+tasks {
+	// disable unused
+	distTar.enabled = false
+	bootDistTar.enabled = false
+	bootDistZip.enabled = false
+	// fat jar
+	bootJar.enabled = false
+	// thin jar
+	jar.enabled = true
 }

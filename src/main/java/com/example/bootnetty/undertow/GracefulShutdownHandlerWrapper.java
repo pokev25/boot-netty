@@ -15,12 +15,10 @@ public class GracefulShutdownHandlerWrapper implements HandlerWrapper {
         if (gracefulShutdownHandler == null) {
             this.gracefulShutdownHandler = new GracefulShutdownHandler(handler);
         }
-
         return gracefulShutdownHandler;
     }
 
     public GracefulShutdownHandler getGracefulShutdownHandler() {
-
         return gracefulShutdownHandler;
     }
 }
