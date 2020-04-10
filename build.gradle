@@ -25,6 +25,7 @@ tasks.withType(JavaCompile) {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-undertow'
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -36,6 +37,7 @@ dependencies {
 
 configurations {
 	compile.exclude module: 'spring-boot-starter-tomcat'
+	compile.exclude module: 'spring-boot-starter-logging'
 }
 
 test {
