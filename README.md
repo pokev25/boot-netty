@@ -1,7 +1,8 @@
 # boot-netty
 simple netty with springboot
 
-참고자료 
+## 참고자료 
+
 netty공식 telnet 샘플
 
 spring boot 시작, 종료시 코드 실행
